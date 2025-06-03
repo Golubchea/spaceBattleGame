@@ -112,15 +112,15 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 # диаграммы
 
-![Command](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://github.com/Golubchea/spaceBattleGame/blob/DiplomaProject/documentation/Command.puml)
+![Command](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/Command.puml)
 
-![IOC](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://github.com/Golubchea/spaceBattleGame/blob/DiplomaProject/documentation/IOC.puml)
+![IOC](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/IOC.puml)
 
-![Singleton](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://github.com/Golubchea/spaceBattleGame/blob/DiplomaProject/documentation/Singleton.puml)
+![Singleton](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/Singleton.puml)
 
-![EntityComponentSystem](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://github.com/Golubchea/spaceBattleGame/blob/DiplomaProject/documentation/EntityComponentSystem.puml)
+![EntityComponentSystem](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/EntityComponentSystem.puml)
 
-![Observer](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://github.com/Golubchea/spaceBattleGame/blob/DiplomaProject/documentation/Observer.puml)
+![Observer](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/Observer.puml)
 
 # Что осталось доделать 
 
