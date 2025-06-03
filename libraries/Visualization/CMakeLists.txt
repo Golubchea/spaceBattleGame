@@ -59,7 +59,7 @@ add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS ${PROJECT_NAME})
 target_link_libraries(
   ${PROJECT_NAME}
   PRIVATE Signals::Signals glad::glad glfw
-          EntityComponentSystem::EntityComponentSystem glm assimp)
+          EntityComponentSystem::EntityComponentSystem glm::glm assimp)
 
 include(cmake/tests.cmake)
 
