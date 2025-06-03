@@ -102,6 +102,7 @@ set(ADDED_LIBS
     boost_variant2
     glm
     glm-header-only
+    zlibstatic
     assimp)
 
 add_subdirectory(libraries/Commands)
