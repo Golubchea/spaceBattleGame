@@ -282,5 +282,6 @@ if(NOT assimp_POPULATED)
 endif()
 
 include_directories(${FETCHCONTENT_BASE_DIR}/assimp-src/include)
+include_directories(${FETCHCONTENT_BASE_DIR}/glm-src)
 # target_include_directories(3d_renderer PRIVATE libs/assimp-src/include)
 # target_link_libraries(3d_renderer assimp)
