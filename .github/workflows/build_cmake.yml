@@ -152,9 +152,10 @@ jobs:
         set(ENV{CC} ${{ matrix.config.cc }})
         set(ENV{CXX} ${{ matrix.config.cxx }})
         execute_process(COMMAND sudo apt install -y llvm)
-        execute_process(COMMAND sudo apt install -y  llvm-tools  )
-        execute_process(COMMAND sudo apt install -y  llvm-dev)
-        execute_process(COMMAND sudo apt install -y   gcovr lcov)
+        execute_process(COMMAND sudo apt install -y llvm-tools  )
+        execute_process(COMMAND sudo apt install -y llvm-dev)
+        execute_process(COMMAND sudo apt install -y gcovr lcov)
+        execute_process(COMMAND sudo apt install -y libwayland-dev)
         if ("${{ runner.os }}" STREQUAL "Windows" AND NOT "x${{ matrix.config.environment_script }}" STREQUAL "x")
           execute_process(
             COMMAND "${{ matrix.config.environment_script }}" && set

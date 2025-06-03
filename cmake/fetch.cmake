@@ -70,9 +70,10 @@ FetchContent_Declare(
 
 FetchContent_Declare(
   assimp
-  GIT_REPOSITORY https://github.com/assimp/assimp.git
-  GIT_TAG master)
-# set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+  URL https://github.com/assimp/assimp/archive/refs/tags/v6.0.1.zip
+  URL_MD5 baeb03e2aaed21a157a6343433f1509a
+  DOWNLOAD_EXTRACT_TIMESTAMP ON
+  GIT_PROGRESS TRUE)
 
 set(BUILD_SHARED_LIBS
     OFF

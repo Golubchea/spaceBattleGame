@@ -118,3 +118,5 @@ add_subdirectory(libraries/GameLogic)
 include(cmake/examples.cmake)
 
 # include(cmake/install.cmake)
+
+install(DIRECTORY data DESTINATION bin)

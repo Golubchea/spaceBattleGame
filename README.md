@@ -1,5 +1,10 @@
 # SpaceShipGame
 
+<h1 align="center">
+  <img src="documentation/pic.png" alt="Client server game">  
+</h1>
+
+
 Этот проект представляет собой игровой движок с клиент-серверной архитектурой , реализованный на C++ с использованием ECS (Entity Component System), OpenGL, Boost.Serialization и Google Test. В движке реализованы:
 
 Система управления объектами через команды
@@ -68,12 +73,26 @@ ninja all -j16
 ninja install
 ```
 
+если нет интернета но 3rdparty скачана 
+
+```
+mkdir build cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=<куда установить приложения> -DFETCHCONTENT_FULLY_DISCONNECTED:BOOL=OFF
+ninja all -j16
+ninja install
+```
+
+
 # Автоматический подсчет coverage
 
 Должен быть установлен lcov
 
 ```
-sudo apt install llvm clang
+sudo apt install -y clang
+sudo apt install -y llvm
+sudo apt install -y llvm-tools
+sudo apt install -y llvm-dev
+sudo apt install -y gcovr lcov
 ```
 
 если его нет, чтобы не получить ошибку при конфигурировании
@@ -124,7 +143,7 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 # Что осталось доделать 
 
-Микросервис jwt токенов
-написать команду проверки коллизий между обьектами
-дописать логику запуска торпед
-дописать тесты на 90 % coverage
+- Микросервис jwt токенов
+- Написать команду проверки коллизий между обьектами
+- Дописать логику запуска торпед
+- Дописать тесты на 90 % coverage
