@@ -159,6 +159,7 @@ jobs:
         execute_process(COMMAND sudo apt install -y libxkbcommon-dev)
         execute_process(COMMAND sudo apt install -y libxkbcommon-x11-dev)
         execute_process(COMMAND sudo apt install -y libxkbfile-dev)
+        execute_process(COMMAND sudo apt install -y libxrandr-dev)
          
         if ("${{ runner.os }}" STREQUAL "Windows" AND NOT "x${{ matrix.config.environment_script }}" STREQUAL "x")
           execute_process(
