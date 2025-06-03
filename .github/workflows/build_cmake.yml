@@ -156,6 +156,10 @@ jobs:
         execute_process(COMMAND sudo apt install -y llvm-dev)
         execute_process(COMMAND sudo apt install -y gcovr lcov)
         execute_process(COMMAND sudo apt install -y libwayland-dev)
+        execute_process(COMMAND sudo apt install -y libxkbcommon-dev)
+        execute_process(COMMAND sudo apt install -y libxkbcommon-x11-dev)
+        execute_process(COMMAND sudo apt install -y libxkbfile-dev)
+         
         if ("${{ runner.os }}" STREQUAL "Windows" AND NOT "x${{ matrix.config.environment_script }}" STREQUAL "x")
           execute_process(
             COMMAND "${{ matrix.config.environment_script }}" && set
