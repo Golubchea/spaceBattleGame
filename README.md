@@ -112,15 +112,15 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 # диаграммы
 
-![Command](http://www.plantuml.com/plantuml/proxy?cache=no&src=documentation/Command.puml)
+![Command](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://github.com/Golubchea/spaceBattleGame/blob/DiplomaProject/documentation/Command.puml)
 
-![IOC](http://www.plantuml.com/plantuml/proxy?cache=no&src=documentation/IOC.puml)
+![IOC](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://github.com/Golubchea/spaceBattleGame/blob/DiplomaProject/documentation/IOC.puml)
 
-![Singleton](http://www.plantuml.com/plantuml/proxy?cache=no&src=documentation/Singleton.puml)
+![Singleton](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://github.com/Golubchea/spaceBattleGame/blob/DiplomaProject/documentation/Singleton.puml)
 
-![EntityComponentSystem](http://www.plantuml.com/plantuml/proxy?cache=no&src=documentation/EntityComponentSystem.puml)
+![EntityComponentSystem](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://github.com/Golubchea/spaceBattleGame/blob/DiplomaProject/documentation/EntityComponentSystem.puml)
 
-![Observer](http://www.plantuml.com/plantuml/proxy?cache=no&src=documentation/Observer.puml)
+![Observer](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://github.com/Golubchea/spaceBattleGame/blob/DiplomaProject/documentation/Observer.puml)
 
 # Что осталось доделать 
 
