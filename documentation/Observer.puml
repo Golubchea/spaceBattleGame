@@ -1,0 +1,11 @@
+@startuml
+class Signal {
+  +connect(signalName, handler)
+  +emit(signalName)
+}
+class InputHandler
+class ClientNetworkHandler
+
+Signal --> InputHandler : emits
+Signal --> ClientNetworkHandler : emits
+@enduml

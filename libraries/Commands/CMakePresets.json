@@ -1,0 +1,78 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 0,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/../build/${presetName}",
+      "cacheVariables": {
+        "MO_PRESET_NAME": "${presetName}",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/../build/${presetName}/install"
+      }
+    },
+    {
+      "name": "release",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "MO_GLOBAL_LOG_LEVEL": "warning"
+      }
+    },
+    {
+      "name": "relwithdebinfo",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO": "Release"
+      }
+    },
+    {
+      "name": "debug",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS_INIT": "",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "linux-base",
+      "hidden": true,
+      "generator": "Ninja",
+      "inherits": "base"
+    },
+    {
+      "name": "linux-debug",
+      "inherits": ["linux-base", "debug"]
+    },
+    {
+      "name": "linux-relwithdebinfo",
+      "inherits": ["linux-base", "relwithdebinfo"]
+    },
+    {
+      "name": "linux-release",
+      "inherits": ["linux-base", "release"]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux-debug",
+      "targets": "all"
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release",
+      "targets": "all"
+    },
+    {
+      "name": "linux-relwithdebinfo",
+      "configurePreset": "linux-relwithdebinfo",
+      "targets": "all"
+    }
+  ]
+}

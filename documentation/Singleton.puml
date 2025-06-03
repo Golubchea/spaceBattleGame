@@ -1,0 +1,12 @@
+@startuml
+class IoCContainer {
+  {static} GetInstance()
+}
+class ExceptionHandler {
+  {static} GetInstance()
+}
+
+note right of IoCContainer
+  Singleton pattern for global access
+end note
+@enduml
