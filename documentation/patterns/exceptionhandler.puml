@@ -1,0 +1,16 @@
+@startuml
+abstract class ExceptionHandler {
+    +SetNext(handler)
+    +Handle(exception)
+}
+
+class TwoTriesThenLogHandler
+class LogRecoveryHandler
+
+ExceptionHandler <|-- TwoTriesThenLogHandler
+ExceptionHandler <|-- LogRecoveryHandler
+
+note right of ExceptionHandler
+  Цепочка ответственности за обработку ошибок
+end note
+@enduml

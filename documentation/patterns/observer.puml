@@ -1,11 +1,16 @@
 @startuml
 class Signal {
-  +connect(signalName, handler)
-  +emit(signalName)
+    +connect(signalName, handler)
+    +emit(signalName)
 }
+
 class InputHandler
 class ClientNetworkHandler
 
 Signal --> InputHandler : emits
 Signal --> ClientNetworkHandler : emits
+
+note right of Signal
+  Обработка событий ввода и сети
+end note
 @enduml

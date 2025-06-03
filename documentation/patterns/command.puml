@@ -1,8 +1,9 @@
 @startuml
 interface ICommand {
-  +Execute(IObject* object)
-  +Serialize() std::vector<uint8>
+    +execute()
+    +serialize() : vector<uint8_t>
 }
+
 class MoveCommand
 class RotateCommand
 class BurnFuelCommand
@@ -16,7 +17,7 @@ ICommand <|-- MacroCommand
 ICommand <|-- RetryCommand
 
 class CommandExecutor {
-  +EnqueueCommand()
-  +WorkerLoop()
+    +enqueue(ICommand*)
+    +workerLoop()
 }
 @enduml

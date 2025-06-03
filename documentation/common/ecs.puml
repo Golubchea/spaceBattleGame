@@ -1,0 +1,40 @@
+@startuml
+class World {
+    +CreateEntity() : Entity
+    +AddComponent<Component>(Entity, Component)
+    +GetComponent<Component>(Entity) : Component*
+}
+
+class Entity {
+    id: uint64_t
+}
+
+abstract class Component
+
+class PositionComponent {
+    position: array<double, 2>
+}
+
+class VelocityComponent {
+    velocity: array<double, 2>
+}
+
+class FuelComponent {
+    fuel: float
+}
+
+class ModelComponent {
+    model: unique_ptr<Model>
+}
+
+World "1" -- "many" Entity : contains
+Entity "1" -- "many" Component : has
+Component <|-- PositionComponent
+Component <|-- VelocityComponent
+Component <|-- FuelComponent
+Component <|-- ModelComponent
+
+note right of World
+  Хранит все сущности и компоненты
+end note
+@enduml

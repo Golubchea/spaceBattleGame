@@ -137,15 +137,30 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 # диаграммы
 
-![Command](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/Command.puml)
+Компоненты:
 
-![IOC](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/IOC.puml)
+![uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/common/common.puml)
 
-![Singleton](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/Singleton.puml)
+![uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/common/ecs.puml)
 
-![EntityComponentSystem](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/EntityComponentSystem.puml)
+![uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/common/network.puml)
 
-![Observer](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/Observer.puml)
+![uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/common/visualization.puml)
+
+Шаблоны проектирования:
+
+![uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/patterns/command.puml)
+
+![uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/patterns/exceptionhandler.puml)
+
+![uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/patterns/ioc.puml)
+
+![uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/patterns/observer.puml)
+
+![uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/patterns/serialization.puml)
+
+![uml](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Golubchea/spaceBattleGame/refs/heads/DiplomaProject/documentation/patterns/singleton.puml)
+
 
 # Что осталось доделать 
 
