@@ -23,7 +23,8 @@ std::vector<uint8_t> ChangeVelocityCommand::Serialize() const {
     boost::archive::binary_oarchive oa(oss);
     oa << Type();
     oa << *this;
-    return {oss.str().begin(), oss.str().end()};
+    const std::string &serialized = oss.str(); // <-- Сохраняем один раз
+    return std::vector<uint8_t>(serialized.begin(), serialized.end());
 }
 
 std::string ChangeVelocityCommand::Type() const {

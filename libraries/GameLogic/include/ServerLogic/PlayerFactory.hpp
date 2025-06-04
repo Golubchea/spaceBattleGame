@@ -1,4 +1,5 @@
 #pragma once
+#include "ECSEngineLib/Components/RotationComponent.hpp"
 #include "Player.hpp"
 #include <ECSEngineLib/World.hpp>
 
@@ -38,6 +39,8 @@ public:
     world_->AddComponent<VelocityComponent>(
         entity, std::array<double, 2>{velocity.x, velocity.z});
     world_->AddComponent<FuelComponent>(entity, fuel);
+
+    world_->AddComponent<RotationComponent>(entity, angle);
 
     world_->AddComponent<ModelComponent>(entity);
     auto obj = world_->GetComponent<ModelComponent>(entity);

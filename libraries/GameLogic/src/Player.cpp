@@ -1,5 +1,6 @@
 // ECSBasedPlayer.cpp
 #include "ServerLogic/Player.hpp"
+#include "ECSEngineLib/Components/RotationComponent.hpp"
 #include <ECSEngineLib/Components/PositionComponent.hpp>
 #include <ECSEngineLib/Components/VelocityComponent.hpp>
 
@@ -17,6 +18,17 @@ void Player::SetProperty(const std::string &key,
     } else {
       comp->setPosition({(*arr)[0], (*arr)[1]});
     }
+  } else if (key == "rotation") {
+
+    const float *arr = reinterpret_cast<const float *>(value.data());
+    if (value.empty()) {
+      return;
+    }
+    std::memcpy((void *)value.data(), arr, value.size());
+    auto comp = world_->GetComponent<RotationComponent>(entity_);
+    if (comp) {
+      comp->setAngle(*arr);
+    }
   }
 }
 
@@ -30,6 +42,13 @@ std::vector<uint8_t> Player::GetProperty(const std::string &key) const {
       result.resize(sizeof(pos));
       std::memcpy(result.data(), &pos, sizeof(pos));
     }
+  } else if (key == "rotation") {
+    auto comp = world_->GetComponent<RotationComponent>(entity_);
+    if (comp) {
+      auto angle = comp->angle();
+      result.resize(sizeof(angle));
+      std::memcpy(result.data(), &angle, sizeof(angle));
+    }
   }
   return result;
 }
@@ -37,8 +56,26 @@ std::vector<uint8_t> Player::GetProperty(const std::string &key) const {
 bool Player::HasProperty(const std::string &key) const {
   if (key == "position") {
     return world_->HasComponent<PositionComponent>(entity_);
+  } else if (key == "rotation") {
+    return world_->HasComponent<RotationComponent>(entity_);
   }
   return false;
+}
+
+double Player::getAngle() const {
+  auto comp = world_->GetComponent<RotationComponent>(entity_);
+  if (comp) {
+    return comp->angle();
+  }
+
+  return 0;
+}
+
+void Player::setAngle(double newV) {
+  auto comp = world_->GetComponent<RotationComponent>(entity_);
+  if (comp) {
+    comp->setAngle(newV);
+  }
 }
 
 void Player::Clear() { /*world_.DestroyEntity(entity_);*/ }

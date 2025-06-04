@@ -23,8 +23,8 @@ std::vector<uint8_t> MoveCommand::Serialize() const {
   oa << Type();
   oa << delta_; // Явно указываем поле delta_
 
-  std::string serialized = oss.str();
-  return {serialized.begin(), serialized.end()};
+  const std::string &serialized = oss.str(); // <-- Сохраняем один раз
+  return std::vector<uint8_t>(serialized.begin(), serialized.end());
 }
 
 std::string MoveCommand::Type() const { return "MoveCommand"; }

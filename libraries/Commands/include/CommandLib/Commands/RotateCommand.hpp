@@ -32,11 +32,17 @@ bool registeredRotate = []() -> bool {
         std::istringstream iss(
             std::string(reinterpret_cast<const char *>(data), size));
         boost::archive::binary_iarchive iar(iss);
-        // std::string type;
-        // iar >> type;
-        RotateCommand cmd(0.0f);
-        iar >> cmd;
-        return std::make_shared<RotateCommand>(cmd);
+        std::string type;
+        iar >> type;
+
+        if (type != "RotateCommand") {
+          throw std::runtime_error("Invalid command type");
+        }
+
+        float delta;
+        iar >> delta;
+
+        return std::make_shared<RotateCommand>(delta);
       });
   return true;
 }();

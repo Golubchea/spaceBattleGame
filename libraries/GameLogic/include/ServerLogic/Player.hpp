@@ -22,6 +22,9 @@ public:
   Vector<double, 2> getVelocity() const;
   void setPosition(const Vector<double, 2> &newV);
 
+  double getAngle() const;
+  void setAngle(double newV);
+
   void Clear();
 
   Entity entity() const;

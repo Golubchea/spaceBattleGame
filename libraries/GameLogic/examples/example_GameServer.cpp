@@ -54,7 +54,7 @@ int main(int, const char **) {
         container.Resolve<std::shared_ptr<CommandExecutor>>("CommandService");
 
     auto player = playerFactory->CreatePlayer({0, 0, 0}, {0, 0, 0}, 0, 100, 5);
-    // auto axis = playerFactory->CreateAxis();
+    auto axis = playerFactory->CreateAxis();
     auto grid = playerFactory->CreateGrid();
 
     std::cout << "Player connected with Entity ID: " << player->entity() << "\n"

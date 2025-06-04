@@ -9,6 +9,7 @@
 #include "ECSEngineLib/Components/FuelComponent.hpp"
 #include "ECSEngineLib/Components/MissleComponent.hpp"
 #include "ECSEngineLib/Components/PositionComponent.hpp"
+#include "ECSEngineLib/Components/RotationComponent.hpp"
 #include "ECSEngineLib/Components/VelocityComponent.hpp"
 #include <ECSEngineLib/World.hpp>
 #include <boost/serialization/export.hpp>
@@ -57,3 +58,4 @@ BOOST_CLASS_EXPORT_GUID(PositionComponent, "PositionComponent")
 BOOST_CLASS_EXPORT_GUID(VelocityComponent, "VelocityComponent")
 BOOST_CLASS_EXPORT_GUID(FuelComponent, "FuelComponent")
 BOOST_CLASS_EXPORT_GUID(MissleComponent, "MissleComponent")
+BOOST_CLASS_EXPORT_GUID(RotationComponent, "RotationComponent")

@@ -81,7 +81,7 @@ int main(int, const char **) {
     });
 
     signals->connect("right", [client, &commandExecutor, &player]() {
-      float angle = 0.1;
+      float angle = 0.1f;
       auto moveCmd = std::make_shared<RotateCommand>(angle);
       commandExecutor->EnqueueCommand(moveCmd, player);
       commandExecutor->WorkerLoop();

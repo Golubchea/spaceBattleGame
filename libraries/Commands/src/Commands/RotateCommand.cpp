@@ -21,7 +21,8 @@ std::vector<uint8_t> RotateCommand::Serialize() const {
     boost::archive::binary_oarchive oa(oss);
     oa << Type();
     oa << angle_;
-    return {oss.str().begin(), oss.str().end()};
+    const std::string &serialized = oss.str(); // <-- Сохраняем один раз
+    return std::vector<uint8_t>(serialized.begin(), serialized.end());
 }
 
 std::string RotateCommand::Type() const {
