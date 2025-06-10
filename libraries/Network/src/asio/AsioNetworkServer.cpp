@@ -27,6 +27,13 @@ void AsioNetworkServer::setOnClientConnect(
   on_client_connect_ = handler;
 }
 
+void AsioNetworkServer::eraseClient(ISession::Ptr session) {
+  auto it = std::find(clients_.begin(), clients_.end(), session);
+  if (it != clients_.end()) {
+    clients_.erase(it);
+  }
+}
+
 void AsioNetworkServer::doAccept() {
   acceptor_.async_accept([this](boost::system::error_code ec,
                                 boost::asio::ip::tcp::socket socket) {

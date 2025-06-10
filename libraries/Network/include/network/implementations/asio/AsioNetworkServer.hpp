@@ -13,6 +13,7 @@ public:
   void poll() override;
   void broadcast(const std::vector<uint8_t> &data) override;
   void setOnClientConnect(std::function<void(ISession::Ptr session)>) override;
+  void eraseClient(ISession::Ptr session) override;
 
 private:
   void doAccept();

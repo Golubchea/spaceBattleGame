@@ -3,6 +3,7 @@
 #include "Component.hpp"
 #include "Entity.hpp"
 #include <boost/core/demangle.hpp>
+#include <boost/core/demangle.hpp> // для typeid().name(), можно опустить если не нужно
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/serialization.hpp>
@@ -31,16 +32,22 @@ void serialize(Archive &ar, std::type_index &t, unsigned int) {
 
 class World {
 public:
-    World();
+  using UpdateCallback = std::function<void(float)>;
 
-    Entity CreateEntity();
-    void DestroyEntity(Entity entity);
+  void RegisterSystem(const UpdateCallback &callback) {
+    updateCallbacks_.push_back(callback);
+  }
 
-    template <typename T, typename... Args>
-    void AddComponent(Entity entity, Args &&...args) {
-      auto comp = std::make_shared<T>(std::forward<Args>(args)...);
-      components_[typeid(T).name()][entity] = comp;
-    }
+  World();
+
+  Entity CreateEntity();
+  void DestroyEntity(Entity entity);
+
+  template <typename T, typename... Args>
+  void AddComponent(Entity entity, Args &&...args) {
+    auto comp = std::make_shared<T>(std::forward<Args>(args)...);
+    components_[typeid(T).name()][entity] = comp;
+  }
 
     template <typename T> bool HasComponent(Entity entity) const {
       auto it = components_.find(typeid(T).name());
@@ -61,7 +68,11 @@ public:
 
     void Save(const std::string &filename);
     void Load(const std::string &filename);
-    void Update(float dt) {};
+    void Update(float dt) {
+      for (const auto &callback : updateCallbacks_) {
+        callback(dt);
+      }
+    };
 
     friend class boost::serialization::access;
 
@@ -99,6 +110,22 @@ public:
       return os;
     }
 
+    template <typename T> std::vector<Entity> getAllEntitiesWith() const {
+      std::vector<Entity> result;
+
+      auto it = components_.find(typeid(T).name());
+      if (it != components_.end()) {
+        const auto &entityMap = it->second;
+        result.reserve(entityMap.size());
+
+        for (const auto &[entity, component] : entityMap) {
+          result.push_back(entity);
+        }
+      }
+
+      return result;
+    }
+
     std::unordered_map<std::string,
                        std::unordered_map<Entity, std::shared_ptr<Component>>>
     components() const;
@@ -113,6 +140,7 @@ public:
     }
 
   private:
+    std::vector<UpdateCallback> updateCallbacks_;
     Entity next_entity_id_;
     std::unordered_map<std::string,
                        std::unordered_map<Entity, std::shared_ptr<Component>>>

@@ -57,11 +57,11 @@ public:
                          1, GL_FALSE, glm::value_ptr(projection));
 
       glUniform3f(glGetUniformLocation(shader()->getID(), "material.ambient"),
-                  1.0f, 0.5f, 0.31f);
+                  1.0f, 1.0f, 0.31f);
       glUniform3f(glGetUniformLocation(shader()->getID(), "material.diffuse"),
-                  1.0f, 0.5f, 0.31f);
+                  1.0f, 1.0f, 0.31f);
       glUniform3f(glGetUniformLocation(shader()->getID(), "material.specular"),
-                  0.5f, 0.5f, 0.5f);
+                  1.0f, 1.0f, 0.31f);
       glUniform1f(glGetUniformLocation(shader()->getID(), "material.shininess"),
                   32.0f);
 

@@ -49,45 +49,6 @@ public:
         });
   }
 
-  // void send(const std::vector<uint8_t> &data) override {
-  //   boost::asio::post(socket_.get_executor(), [this, self =
-  //   shared_from_this(),
-  //                                              data = std::move(data)]() {
-  //     if (!is_active_ || !socket_.is_open())
-  //       return;
-
-  //     bool should_start = write_queue_.empty() && !is_writing_;
-  //     write_queue_.push_back(std::move(data));
-
-  //     if (should_start) {
-  //       doWrite();
-  //     }
-  //   });
-  // }
-
-  // void close() override {
-  //   boost::asio::post(socket_.get_executor(),
-  //                     [this, self = shared_from_this()]() {
-  //                       if (!is_active_)
-  //                         return;
-  //                       is_active_ = false;
-  //                       socket_.close();
-  //                     });
-  // }
-
-  // void close() override {
-  //   boost::asio::post(socket_.get_executor(),
-  //                     [this, self = shared_from_this()]() {
-  //                       if (!is_active_)
-  //                         return;
-  //                       is_active_ = false;
-  //                       if (on_disconnect_handler_) {
-  //                         on_disconnect_handler_();
-  //                       }
-  //                       socket_.close();
-  //                     });
-  // }
-
   void setOnMessage(
       std::function<void(const std::vector<uint8_t> &)> handler) override {
     on_message_handler_ = std::move(handler);
@@ -185,90 +146,20 @@ public:
                       });
   }
 
-  // void startReading() {
-  //   if (!is_active_)
-  //     return;
+  // ==== Реализация новых методов ====
+  bool isAuthenticated() const override { return authenticated_; }
+  void setAuthenticated(bool value) override { authenticated_ = value; }
 
-  //   boost::asio::async_read_until(
-  //       socket_, read_buffer_, '\0',
-  //       [this, self = shared_from_this()](const boost::system::error_code
-  //       &ec,
-  //                                         size_t length) {
-  //         if (!self->is_active_)
-  //           return;
-
-  //         if (ec == boost::asio::error::eof || !self->socket_.is_open()) {
-  //           // Соединение закрыто нормально — штатное завершение
-  //           std::cerr << "Client disconnected gracefully\n";
-  //           if (on_disconnect_handler_) {
-  //             on_disconnect_handler_();
-  //           }
-  //           self->is_active_ = false;
-  //           return;
-  //         }
-
-  //         if (ec) {
-  //           std::cerr << "Read error: " << ec.message() << "\n";
-  //           if (on_disconnect_handler_) {
-  //             on_disconnect_handler_();
-  //           }
-  //           self->is_active_ = false;
-  //           return;
-  //         }
-
-  //         if (length == 0)
-  //           return;
-
-  //         std::vector<uint8_t> message(
-  //             boost::asio::buffer_cast<const uint8_t *>(read_buffer_.data()),
-  //             boost::asio::buffer_cast<const uint8_t *>(read_buffer_.data())
-  //             +
-  //                 length);
-
-  //         read_buffer_.consume(length);
-
-  //         if (!message.empty() && message.back() == '\0')
-  //           message.pop_back();
-
-  //         if (!message.empty() && on_message_handler_) {
-  //           on_message_handler_(message);
-  //         }
-
-  //         self->startReading(); // продолжаем чтение
-  //       });
-  // }
+  std::string getUsername() const override { return username_; }
+  void setUsername(const std::string &username) override {
+    username_ = username;
+  }
 
 private:
+  bool authenticated_ = false;
+  std::string username_;
   uint32_t message_size_ = 0;
   std::vector<uint8_t> message_buffer_;
-
-  // void doWrite() {
-  //   if (!is_active_ || write_queue_.empty()) {
-  //     is_writing_ = false;
-  //     return;
-  //   }
-
-  //   is_writing_ = true;
-  //   auto data = write_queue_.front();
-
-  //   boost::asio::async_write(
-  //       socket_, boost::asio::buffer(data),
-  //       [this, self = shared_from_this()](const boost::system::error_code
-  //       &ec,
-  //                                         size_t /*length*/) {
-  //         if (!self->is_active_)
-  //           return;
-
-  //         if (!ec) {
-  //           self->write_queue_.pop_front();
-  //           self->is_writing_ = false;
-  //           self->doWrite();
-  //         } else {
-  //           std::cerr << "Write error: " << ec.message() << std::endl;
-  //           self->close();
-  //         }
-  //       });
-  // }
 };
 
 } // namespace network

@@ -6,7 +6,6 @@
 #include <CommandLib/Exceptions/TwoTriesThenLogHandler.hpp>
 #include <CommandLib/Mocks.hpp>
 #include <ServerLogic/CommandExecutor.hpp>
-#include <iostream>
 
 CommandExecutor::CommandExecutor(std::function<void()> updateCallback)
     : updateCallback_(updateCallback) {

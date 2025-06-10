@@ -1,26 +1,45 @@
 #include <BoundingVolumesHierarchy/BoundingVolumesHierarchy.hpp>
-
 #include <algorithm>
 #include <cmath>
-#include <functional>
-#include <limits>
 #include <stack>
 #include <unordered_set>
 
-void DynamicBVH::build() {
-  leaves.clear();
-  root = std::make_unique<BVHNode>();
+// === Реализация Rect и AABB ===
+AABB Rect::getAABB() const {
+  AABB aabb;
+  float cosA = std::cos(angle);
+  float sinA = std::sin(angle);
 
-  std::vector<int> indices(objects.size());
-  for (int i = 0; i < (int)indices.size(); ++i)
-    indices[i] = i;
+  float hw = halfWidth;
+  float hh = halfHeight;
 
-  buildRecursive(indices, root.get());
+  float points[4][2] = {{hw * cosA - hh * sinA, hw * sinA + hh * cosA},
+                        {-hw * cosA - hh * sinA, -hw * sinA + hh * cosA},
+                        {-hw * cosA + hh * sinA, -hw * sinA - hh * cosA},
+                        {hw * cosA + hh * sinA, hw * sinA - hh * cosA}};
+
+  aabb.min.x = aabb.max.x = center.x;
+  aabb.min.y = aabb.max.y = center.y;
+
+  for (int i = 0; i < 4; ++i) {
+    float x = center.x + points[i][0];
+    float y = center.y + points[i][1];
+
+    aabb.min.x = std::min(aabb.min.x, x);
+    aabb.min.y = std::min(aabb.min.y, y);
+    aabb.max.x = std::max(aabb.max.x, x);
+    aabb.max.y = std::max(aabb.max.y, y);
+  }
+
+  return aabb;
 }
 
 bool AABB::intersects(const AABB &other) const {
-  return !(max.x < other.min.x || other.max.x < min.x || max.y < other.min.y ||
-           other.max.y < min.y);
+  if (max.x <= other.min.x || other.max.x <= min.x)
+    return false;
+  if (max.y <= other.min.y || other.max.y <= min.y)
+    return false;
+  return true;
 }
 
 AABB AABB::merge(const AABB &a, const AABB &b) {
@@ -32,54 +51,50 @@ AABB AABB::merge(const AABB &a, const AABB &b) {
   return result;
 }
 
-// float AABB::surfaceArea() const {
-//   float dx = max.x - min.x;
-//   float dy = max.y - min.y;
-//   return dx * dy;
-// }
+float AABB::surfaceArea() const {
+  float dx = max.x - min.x;
+  float dy = max.y - min.y;
+  return dx * dy;
+}
+// === Реализация DynamicBVH ===
+DynamicBVH::DynamicBVH(std::vector<EntityRect> &objects)
+    : objects_(objects), root_(std::make_unique<BVHNode>()) {}
+
+void DynamicBVH::build() {
+  leaves_.clear();
+  std::vector<int> indices(objects_.size());
+  for (size_t i = 0; i < indices.size(); ++i) {
+    indices[i] = static_cast<int>(i);
+  }
+
+  buildRecursive(indices, root_.get());
+}
 
 void DynamicBVH::buildRecursive(std::vector<int> &indices, BVHNode *node) {
-  if (indices.empty()) {
-    // Если индексы пустые, ничего не делаем
+  if (indices.empty())
     return;
-  }
 
   if (indices.size() == 1) {
     node->isLeaf = true;
     node->index = indices[0];
-    node->box = objects[indices[0]].getAABB();
-    leaves.push_back(node);
+    node->box = objects_[indices[0]].getAABB();
+    leaves_.push_back(node);
     return;
   }
 
-  // Вычисляем общий AABB
-  AABB totalBox;
-  totalBox.min.x = totalBox.min.y = std::numeric_limits<float>::max();
-  totalBox.max.x = totalBox.max.y = -std::numeric_limits<float>::max();
-
+  // Объединяем AABB всех объектов
+  node->box = {};
   for (int idx : indices) {
-    AABB objBox = objects[idx].getAABB();
-    totalBox.min.x = std::min(totalBox.min.x, objBox.min.x);
-    totalBox.min.y = std::min(totalBox.min.y, objBox.min.y);
-    totalBox.max.x = std::max(totalBox.max.x, objBox.max.x);
-    totalBox.max.y = std::max(totalBox.max.y, objBox.max.y);
+    node->box = AABB::merge(node->box, objects_[idx].getAABB());
   }
 
-  int axis =
-      (totalBox.max.x - totalBox.min.x) > (totalBox.max.y - totalBox.min.y) ? 0
-                                                                            : 1;
-
-  // Разделение по среднему центру
-  std::sort(indices.begin(), indices.end(), [&](int i1, int i2) {
-    if (axis == 0)
-      return objects[i1].center.x < objects[i2].center.x;
-    else
-      return objects[i1].center.y < objects[i2].center.y;
+  auto mid = indices.begin() + indices.size() / 2;
+  std::nth_element(indices.begin(), mid, indices.end(), [&](int a, int b) {
+    return objects_[a].rect.center.x < objects_[b].rect.center.x;
   });
 
-  size_t mid = indices.size() / 2;
-  std::vector<int> leftIndices(indices.begin(), indices.begin() + mid);
-  std::vector<int> rightIndices(indices.begin() + mid, indices.end());
+  std::vector<int> leftIndices(indices.begin(), mid);
+  std::vector<int> rightIndices(mid, indices.end());
 
   node->left = std::make_unique<BVHNode>();
   node->right = std::make_unique<BVHNode>();
@@ -90,9 +105,12 @@ void DynamicBVH::buildRecursive(std::vector<int> &indices, BVHNode *node) {
   node->box = AABB::merge(node->left->box, node->right->box);
 }
 
-AABB DynamicBVH::refitNode(DynamicBVH::BVHNode *node) {
+AABB DynamicBVH::refitNode(BVHNode *node) {
+  if (!node)
+    return {};
+
   if (node->isLeaf) {
-    node->box = objects[node->index].getAABB();
+    node->box = objects_[node->index].getAABB();
     return node->box;
   } else {
     AABB leftBox = refitNode(node->left.get());
@@ -102,22 +120,16 @@ AABB DynamicBVH::refitNode(DynamicBVH::BVHNode *node) {
   }
 }
 
-void DynamicBVH::update(int objIndex) {
-  for (auto leaf : leaves) {
-    if (leaf->index == objIndex) {
-      refitNode(leaf);
-      break;
-    }
-  }
-}
-void DynamicBVH::findCollisions(std::vector<std::pair<int, int>> &collisions) {
-  if (!root)
+void DynamicBVH::findCollisions(
+    std::vector<std::pair<uint64_t, uint64_t>> &collisions) {
+  collisions.clear();
+  if (!root_)
     return;
 
   std::stack<std::pair<BVHNode *, BVHNode *>> stack;
-  std::unordered_set<uint64_t> seen; // Для отслеживания уникальных пар
+  std::unordered_set<uint64_t> seen;
 
-  stack.push({root.get(), root.get()});
+  stack.push({root_.get(), root_.get()});
 
   while (!stack.empty()) {
     auto [a, b] = stack.top();
@@ -125,7 +137,6 @@ void DynamicBVH::findCollisions(std::vector<std::pair<int, int>> &collisions) {
 
     if (!a || !b)
       continue;
-
     if (!a->box.intersects(b->box))
       continue;
 
@@ -135,29 +146,24 @@ void DynamicBVH::findCollisions(std::vector<std::pair<int, int>> &collisions) {
 
       if (i == j)
         continue;
-
-      // Гарантируем порядок: i < j
       if (i > j)
         std::swap(i, j);
 
       uint64_t key = ((uint64_t)i << 32) | j;
-      if (!seen.contains(key)) {
-        collisions.emplace_back(i, j);
+      if (!seen.count(key)) {
+        collisions.emplace_back(objects_[i].entity, objects_[j].entity);
         seen.insert(key);
       }
-      continue;
-    }
-
-    if (a->isLeaf) {
-      if (b->left)
-        stack.push({a, b->left.get()});
-      if (b->right)
-        stack.push({a, b->right.get()});
-    } else if (b->isLeaf) {
+    } else if (a->isLeaf) {
       if (a->left)
-        stack.push({a->left.get(), b});
+        stack.push({a, a->left.get()});
       if (a->right)
-        stack.push({a->right.get(), b});
+        stack.push({a, a->right.get()});
+    } else if (b->isLeaf) {
+      if (b->left)
+        stack.push({b->left.get(), b});
+      if (b->right)
+        stack.push({b->right.get(), b});
     } else {
       if (a->left && b->left)
         stack.push({a->left.get(), b->left.get()});
@@ -171,28 +177,8 @@ void DynamicBVH::findCollisions(std::vector<std::pair<int, int>> &collisions) {
   }
 }
 
-AABB Rect::getAABB() const {
-  std::vector<Vec2> corners = {{halfWidth, halfHeight},
-                               {-halfWidth, halfHeight},
-                               {-halfWidth, -halfHeight},
-                               {halfWidth, -halfHeight}};
+std::vector<EntityRect> &DynamicBVH::objects() const { return objects_; }
 
-  float cosA = std::cos(angle);
-  float sinA = std::sin(angle);
-
-  AABB aabb;
-  aabb.min.x = aabb.min.y = std::numeric_limits<float>::max();
-  aabb.max.x = aabb.max.y = -std::numeric_limits<float>::max();
-
-  for (const auto &v : corners) {
-    float x = v.x * cosA - v.y * sinA + center.x;
-    float y = v.x * sinA + v.y * cosA + center.y;
-
-    aabb.min.x = std::min(aabb.min.x, x);
-    aabb.min.y = std::min(aabb.min.y, y);
-    aabb.max.x = std::max(aabb.max.x, x);
-    aabb.max.y = std::max(aabb.max.y, y);
-  }
-
-  return aabb;
+void DynamicBVH::setObjects(const std::vector<EntityRect> &newObjects) {
+  objects_ = newObjects;
 }

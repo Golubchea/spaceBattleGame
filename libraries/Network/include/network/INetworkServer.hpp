@@ -16,7 +16,7 @@ public:
   virtual void broadcast(const std::vector<uint8_t> &data) = 0;
   virtual void
   setOnClientConnect(std::function<void(ISession::Ptr session)> handler) = 0;
-
+  virtual void eraseClient(ISession::Ptr session) = 0;
   inline std::vector<ISession::Ptr> clients() const { return clients_; }
 };
 } // namespace network

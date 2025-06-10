@@ -1,8 +1,8 @@
 #include "CommandLib/Commands/BurnFuelCommand.hpp"
+#include "jwt-cpp/jwt.h"
 #include <CommandLib/Commands/MoveCommand.hpp>
 #include <CommandLib/Commands/RotateCommand.hpp>
 #include <ECSEngineLib/World.hpp>
-
 #include <InversionOfControl/InversionOfControl.h>
 #include <ServerLogic/CommandExecutor.hpp>
 #include <ServerLogic/CommandService.hpp>
@@ -16,11 +16,50 @@
 #include <string>
 #include <utils/conversionUtils.hpp>
 
+std::string username = "admin";
+std::string password = "password";
+
+void send_auth_request(std::shared_ptr<INetworkClient> auth_session) {
+  std::string payload = "user=" + username + ";pass=" + password;
+
+  // generate_jwt(username);
+
+  auth_session->send(ConversionUtils::str2bytes(payload));
+}
+
 int main(int, const char **) {
 
-  // auto crashHandler = StackTraceFactory::createStackTrace();
+  auto auth_client = network::NetworkFactory::createClient();
 
-  // crashHandler->init([]() {
+  auth_client->setOnConnect([auth_client]() {
+    std::cout << "[Client] Connected to auth server\n" << std::flush;
+    send_auth_request(auth_client);
+  });
+
+  std::vector<uint8_t> receivedToken;
+  bool tokenReceived = false;
+
+  auth_client->setOnMessage(
+      [&receivedToken, &tokenReceived](const std::vector<uint8_t> &data) {
+        if (data.empty())
+          return;
+
+        if (data[0] == 0) {
+          std::cerr << "[Client] Auth failed\n";
+          return;
+        }
+
+        receivedToken = data;
+        tokenReceived = true;
+        std::cout << "[Client] Token received\n";
+      });
+
+  auth_client->connect("127.0.0.1", "8081"); // auth-server
+  while (!tokenReceived) {
+    auth_client->poll();
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  }
+
   std::shared_ptr<Signal> signals = std::make_shared<Signal>();
 
   auto &container = IoCContainer::GetInstance();
@@ -35,7 +74,7 @@ int main(int, const char **) {
   // commandExecutor
   auto commandExecutor = std::make_shared<CommandExecutor>([world]() {
     std::cout << "Game state updated" << std::endl;
-    std::cout << *world.get() << std::endl;
+    //  std::cout << *world.get() << std::endl;
   });
 
   container.RegisterFactory<CommandExecutor>(
@@ -60,6 +99,8 @@ int main(int, const char **) {
   client->setSignals(signals);
 
   client->setOnConnect([&]() {
+    // send_auth_request(client);
+
     std::cout << "Connected to server\n" << std::flush;
 
     signals->connect("up", [client, &commandExecutor, &player]() {

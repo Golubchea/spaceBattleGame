@@ -31,6 +31,8 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 # -fprofile-arcs -ftest-coverage")
 
 # ##############################################################################
+include_directories(libs/jwt-cpp/include)
+add_subdirectory(libs/jwt-cpp)
 
 # Собираем исходные файлы
 file(GLOB_RECURSE SRC src/*.cpp)
@@ -57,6 +59,7 @@ target_include_directories(
 add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS ${PROJECT_NAME})
 
 set(ADDED_LIBS2
+    jwt-cpp::jwt-cpp
     Signals::Signals
     Network::Network
     Commands::Commands

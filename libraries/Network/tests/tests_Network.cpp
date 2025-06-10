@@ -17,6 +17,7 @@ public:
   void broadcast(const std::vector<uint8_t> &) override {};
   void setOnClientConnect(
       std::function<void(ISession::Ptr session)> handler) override {};
+  void eraseClient(ISession::Ptr session) override {};
 };
 
 class MockSession : public ISession {
@@ -26,6 +27,18 @@ class MockSession : public ISession {
       std::function<void(const std::vector<uint8_t> &)> handler) override {};
   void setOnConnect(std::function<void()> handler) override {};
   void setOnDisconnect(std::function<void()> handler) override {};
+
+  bool isAuthenticated() const override { return authenticated_; }
+  void setAuthenticated(bool value) override { authenticated_ = value; }
+
+  std::string getUsername() const override { return username_; }
+  void setUsername(const std::string &username) override {
+    username_ = username;
+  }
+
+private:
+  bool authenticated_ = false;
+  std::string username_;
 };
 
 // === Тест: клиент и сервер обмениваются сообщениями ===
