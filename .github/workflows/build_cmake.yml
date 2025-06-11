@@ -291,8 +291,8 @@ jobs:
 
         foreach(test_target IN LISTS TEST_TARGETS)
         execute_process(
-            COMMAND ${CMAKE_CTEST_COMMAND} -R "^${test_target}$" -j ${N}
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/build
+            COMMAND ninja "${test_target}"
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/bin
             RESULT_VARIABLE result
             OUTPUT_VARIABLE output
             ERROR_VARIABLE error_output
@@ -301,6 +301,8 @@ jobs:
         )
         if(NOT result EQUAL 0)
             message(FATAL_ERROR "Test failed: ${test_target}")
+        else()
+            message(${output})
         endif()
         endforeach()
  
