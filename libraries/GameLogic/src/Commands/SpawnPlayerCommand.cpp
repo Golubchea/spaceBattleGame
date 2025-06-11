@@ -22,7 +22,8 @@ void SpawnPlayerCommand::Execute(IObject* context) {
     }
 
     auto& container = IoCContainer::GetInstance();
-    auto playerFactory = container.Resolve<std::shared_ptr<PlayerFactory>>("PlayerFactory");
+    auto playerFactory =
+        container.Resolve<std::shared_ptr<IPlayerFactory>>("PlayerFactory");
 
     // Создаём игрока
     auto player = playerFactory->CreatePlayer(

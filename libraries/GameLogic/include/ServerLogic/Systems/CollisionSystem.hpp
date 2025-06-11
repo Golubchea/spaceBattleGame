@@ -9,6 +9,7 @@
 #include <BoundingVolumesHierarchy/BoundingVolumesHierarchy.hpp>
 #include <ECSEngineLib/World.hpp>
 #include <ServerLogic/CommandExecutor.hpp>
+#include <unordered_set>
 
 class CollisionSystem {
 public:
@@ -22,7 +23,4 @@ private:
   std::shared_ptr<World> world_;
   std::shared_ptr<DynamicBVH> bvh_;
   std::shared_ptr<CommandExecutor> command_executor_;
-
-  // Храним предыдущие позиции для определения движения
-  std::unordered_map<Entity, Vec2> last_positions_;
 };

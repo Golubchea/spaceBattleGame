@@ -55,7 +55,7 @@ int main(int, const char **) {
   container.RegisterFactory<World>("World", [&world]() { return world; });
 
   // Регистрация PlayerFactory
-  container.RegisterFactory<PlayerFactory>("PlayerFactory", [&container]() {
+  container.RegisterFactory<IPlayerFactory>("PlayerFactory", [&container]() {
     auto world = container.Resolve<std::shared_ptr<World>>("World");
     return std::make_shared<DefaultPlayerFactory>(world);
   });
@@ -66,10 +66,11 @@ int main(int, const char **) {
   container.RegisterFactory<DynamicBVH>("DynamicBVH", [bvh]() { return bvh; });
 
   // Регистрация CommandService
-  auto commandExecutor = std::make_shared<CommandExecutor>([world]() {
+  auto commandExecutor = std::make_shared<CommandExecutor>([&world]() {
     std::cout << "Game state updated" << std::endl;
     // std::cout << *world.get() << std::endl;
     world->Update(1);
+    // std::this_thread::sleep_for(std::chrono::milliseconds(10));
   });
 
   container.RegisterFactory<CommandExecutor>(
@@ -87,18 +88,21 @@ int main(int, const char **) {
   // Сервер
   auto networkServer = network::NetworkFactory::createServer(8080);
 
-  networkServer->setOnClientConnect([&container,
+  float playersCount = 0.0f;
+
+  networkServer->setOnClientConnect([&container, &playersCount,
                                      networkServer](ISession::Ptr session) {
     auto worldService = container.Resolve<std::shared_ptr<World>>("World");
     auto playerFactory =
-        container.Resolve<std::shared_ptr<PlayerFactory>>("PlayerFactory");
+        container.Resolve<std::shared_ptr<IPlayerFactory>>("PlayerFactory");
     auto commandService =
         container.Resolve<std::shared_ptr<CommandExecutor>>("CommandService");
 
-    auto player = playerFactory->CreatePlayer({0, 0, 0}, {0, 0, 0}, 0, 100, 5);
+    auto player =
+        playerFactory->CreatePlayer({0, 0, playersCount}, {0, 0, 0}, 0, 100, 5);
     auto axis = playerFactory->CreateAxis();
     auto grid = playerFactory->CreateGrid();
-
+    playersCount = playersCount + 5.0f;
     session->setOnMessage([commandService, session, playerFactory,
                            player](const std::vector<uint8_t> &data) {
       if (!session->isAuthenticated()) {

@@ -4,12 +4,12 @@
 #include <ECSEngineLib/Components/RotationComponent.hpp>
 #include <ServerLogic/Commands/DestroyEntityCommand.hpp>
 #include <ServerLogic/Systems/CollisionSystem.hpp>
-#include <iostream>
+#include <unordered_set>
 
 namespace {
 
-float sizeX = 12.5;
-float sizeY = 10.5;
+float sizeX = 0.5;
+float sizeY = 0.5;
 
 } // namespace
 
@@ -28,7 +28,9 @@ void CollisionSystem::onWorldUpdate(float dt) {
     return;
 
   // === Шаг 1: Обновляем только те объекты, у которых изменилась позиция ===
-  auto entities = world_->getAllEntitiesWith<PositionComponent>();
+
+  auto entities = world_->getAllEntitiesWith<RotationComponent>();
+  size_t i = 0;
   for (const auto &entity : entities) {
     auto pos = world_->GetComponent<PositionComponent>(entity);
     if (!pos)
@@ -41,20 +43,11 @@ void CollisionSystem::onWorldUpdate(float dt) {
       angle = rot->angle();
     }
 
+    bvh_->objects().resize(entities.size());
+
     Rect rect(Vec2(pos->getPosition()[0], pos->getPosition()[1]), sizeX, sizeY,
               angle);
-    bvh_->objects().push_back({rect, entity});
-
-    // bvh_->update(
-    //     entity); // предположим, что DynamicBVH поддерживает update(Entity)
-
-    // Проверяем, была ли позиция изменена
-    //  auto it = last_positions_.find(entity);
-    //  if (it == last_positions_.end() || it->second != current_pos) {
-    //    // Нужно обновить объект в BVH по его ID
-
-    //    last_positions_[entity] = current_pos;
-    //  }
+    bvh_->objects().at(i) = {rect, entity};
   }
   bvh_->build();
 
@@ -62,18 +55,11 @@ void CollisionSystem::onWorldUpdate(float dt) {
   std::vector<std::pair<uint64_t, uint64_t>> collisions;
   bvh_->findCollisions(collisions);
 
-  // std::cout << "CollisionSystem::onWorldUpdate(float dt)" << "findCollisions"
-  //         << collisions.size();
-
-  // === Шаг 3: Обрабатываем коллизии ===
   for (const auto &[a, b] : collisions) {
-    // std::cout << "[Collision] Entity " << a << " and Entity " << b << "\n";
-
-    // Пример: уничтожаем один из объектов
-    auto destroyCmd = std::make_shared<DestroyEntityCommand>(b, world_);
-    if (command_executor_) {
-      command_executor_->EnqueueCommand(destroyCmd, nullptr);
-      command_executor_->WorkerLoop();
-    }
+    auto destroyCmd = std::make_shared<DestroyEntityCommand>(a, world_);
+    command_executor_->EnqueueCommand(destroyCmd, nullptr);
+    command_executor_->WorkerLoop();
   }
+
+  bvh_->objects().clear();
 }

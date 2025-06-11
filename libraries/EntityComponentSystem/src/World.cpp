@@ -24,7 +24,11 @@ Entity World::CreateEntity() {
 }
 
 void World::DestroyEntity(Entity entity) {
+
   for (auto &[type, map] : components_) {
+    if (GetComponent<PositionComponent>(entity) == nullptr) {
+      continue;
+    }
     map.erase(entity);
   }
 }

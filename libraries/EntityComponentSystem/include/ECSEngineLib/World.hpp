@@ -12,6 +12,7 @@
 #include <boost/serialization/type_info_implementation.hpp>
 #include <boost/serialization/unordered_map.hpp>
 #include <boost/serialization/utility.hpp>
+#include <iostream>
 #include <memory>
 #include <typeindex>
 #include <unordered_map>
@@ -49,12 +50,22 @@ public:
     components_[typeid(T).name()][entity] = comp;
   }
 
-    template <typename T> bool HasComponent(Entity entity) const {
-      auto it = components_.find(typeid(T).name());
-      if (it == components_.end())
-        return false;
-      return it->second.find(entity) != it->second.end();
+  std::vector<Entity> getAllEntities() const {
+    std::vector<Entity> result;
+    for (const auto &[typeName, entityMap] : components_) {
+      for (const auto &[entity, component] : entityMap) {
+        result.push_back(entity);
+      }
     }
+    return result;
+  }
+
+  template <typename T> bool HasComponent(Entity entity) const {
+    auto it = components_.find(typeid(T).name());
+    if (it == components_.end())
+      return false;
+    return it->second.find(entity) != it->second.end();
+  }
 
     template <typename T> std::shared_ptr<T> GetComponent(Entity entity) const {
       auto it = components_.find(typeid(T).name());
@@ -110,17 +121,49 @@ public:
       return os;
     }
 
+    // template <typename T> std::vector<Entity> getAllEntitiesWith() const {
+    //   std::vector<Entity> result;
+
+    //   auto it = components_.find(typeid(T).name());
+    //   if (it != components_.end()) {
+    //     const auto &entityMap = it->second;
+    //     result.reserve(entityMap.size());
+
+    //     for (const auto &[entity, component] : entityMap) {
+    //       result.push_back(entity);
+    //     }
+    //   }
+
+    //   return result;
+    // }
+
     template <typename T> std::vector<Entity> getAllEntitiesWith() const {
       std::vector<Entity> result;
 
-      auto it = components_.find(typeid(T).name());
-      if (it != components_.end()) {
-        const auto &entityMap = it->second;
-        result.reserve(entityMap.size());
-
-        for (const auto &[entity, component] : entityMap) {
-          result.push_back(entity);
+      try {
+        auto it = components_.find(typeid(T).name());
+        if (it == components_.end()) {
+          return result; // ранний выход, если тип не найден
         }
+
+        const auto &entityMap = it->second;
+        if (entityMap.empty()) {
+          return result; // ещё один уровень защиты
+        }
+
+        result.reserve(entityMap.size());
+        for (const auto &[entity, component] : entityMap) {
+          if (component) { // Дополнительно: проверяем, что компонент не nullptr
+            result.push_back(entity);
+          }
+        }
+
+      } catch (const std::exception &ex) {
+        std::cerr << "[ERROR] Exception in getAllEntitiesWith<"
+                  << typeid(T).name() << ">: " << ex.what() << std::endl;
+      } catch (...) {
+        std::cerr << "[ERROR] Unknown exception in getAllEntitiesWith<"
+                  << typeid(T).name() << ">" << std::endl;
       }
 
       return result;

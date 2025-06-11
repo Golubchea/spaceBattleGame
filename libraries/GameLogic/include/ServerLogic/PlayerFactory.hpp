@@ -11,19 +11,18 @@
 #include <Visualization/Model/Entities/modelComponent.h>
 #include <Visualization/Model/Entities/shaderComponent.h>
 
-class PlayerFactory {
+class IPlayerFactory {
 public:
-    virtual ~PlayerFactory() = default;
-    virtual std::shared_ptr<Player> CreatePlayer(glm::vec3 pos,
-                                                 glm::vec3 velocity,
-                                                 float angle, float fuel,
-                                                 int missles) = 0;
+  virtual ~IPlayerFactory() = default;
+  virtual std::shared_ptr<Player> CreatePlayer(glm::vec3 pos,
+                                               glm::vec3 velocity, float angle,
+                                               float fuel, int missles) = 0;
 
-    virtual std::shared_ptr<Player> CreateAxis() = 0;
-    virtual std::shared_ptr<Player> CreateGrid() = 0;
+  virtual std::shared_ptr<Player> CreateAxis() = 0;
+  virtual std::shared_ptr<Player> CreateGrid() = 0;
 };
 
-class DefaultPlayerFactory : public PlayerFactory {
+class DefaultPlayerFactory : public IPlayerFactory {
 public:
   explicit DefaultPlayerFactory(const shared_ptr<World> &world)
       : world_(world) {}

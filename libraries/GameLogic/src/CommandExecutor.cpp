@@ -21,7 +21,7 @@ CommandExecutor::CommandExecutor(std::function<void()> updateCallback)
 void CommandExecutor::WorkerLoop() {
   // while (!stopped_) {
   auto item = queue_.Pop();
-  if (!item.command || !item.context)
+  if (!item.command)
     return;
   //  continue;
 

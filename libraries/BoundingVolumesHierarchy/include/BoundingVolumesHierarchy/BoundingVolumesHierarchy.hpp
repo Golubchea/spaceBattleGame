@@ -36,6 +36,8 @@ struct Rect {
 struct EntityRect {
   Rect rect;
   uint64_t entity;
+
+  EntityRect() {}
   EntityRect(Vec2 center, float halfWidth, float halfHeight, float angle,
              uint64_t e)
       : rect{center, halfWidth, halfHeight, angle}, entity(e) {}

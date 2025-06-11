@@ -1,4 +1,5 @@
 
+#include "ServerLogic/Systems/CollisionSystem.hpp"
 #include "gtest/gtest.h"
 #include <ECSEngineLib/Components/PositionComponent.hpp>
 #include <ECSEngineLib/Components/VelocityComponent.hpp>
@@ -99,3 +100,16 @@ TEST(PlayerTest, ChangeEntity_UpdatesInternalReference) {
 
   EXPECT_EQ(player.entity(), entity2);
 }
+
+// class Mock
+
+// TEST(CollisionSystemTest, OnUpdate_NoCrash) {
+//   auto world = std::make_shared<MockWorld>();
+//   auto bvh = std::make_shared<MockBVH>();
+//   auto executor = std::make_shared<MockCommandExecutor>();
+
+//   CollisionSystem system(world, bvh, executor);
+
+//   // Вызываем метод — не должно быть краша
+//   system.onWorldUpdate(0.01f);
+// }
