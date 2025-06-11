@@ -50,7 +50,7 @@ TEST(IoCTest, Scopes_Isolation) {
 }
 
 TEST(IoCTest, MultiThreaded_ScopeIsolation) {
-  constexpr int THREAD_COUNT = 0;
+  constexpr int THREAD_COUNT = 1;
 
   for (int i = 0; i < THREAD_COUNT; ++i) {
     std::thread([i]() {
