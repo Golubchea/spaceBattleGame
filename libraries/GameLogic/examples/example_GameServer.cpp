@@ -134,22 +134,6 @@ int main(int, const char **) {
       }
     });
 
-    // session->setOnMessage(
-    //     [commandService, player, session](const std::vector<uint8_t> &data) {
-    //       // Проверяем токен
-    //       std::string username;
-    //       if (!verify_jwt_token(data, &username)) {
-    //         std::cerr << "[GameServer] Invalid token from client\n";
-    //         session->send({1}); // ошибка авторизации
-    //         session->close();
-    //         return;
-    //       }
-    //       session->send({0}); // успешная аутентификация
-
-    //       std::cout << "[GameServer] Auth OK for: " << username << "\n";
-
-    //     });
-
     session->setOnDisconnect([player, worldService, &session,
                               &networkServer]() {
       worldService->DestroyEntity(player->entity());
