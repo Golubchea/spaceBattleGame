@@ -1,3 +1,4 @@
+#include "Visualization/WorldComponentProvider.hpp"
 #include <Visualization/Model/Entities/Axes.hpp>
 #include <Visualization/Model/Shaders/ModelShader.hpp>
 #include <Visualization/Visualization.hpp>
@@ -11,7 +12,9 @@ BOOST_CLASS_EXPORT_GUID(ModelComponent, "ModelComponent")
 Visualization::Visualization(std::shared_ptr<Signal> key_signal,
                              std::shared_ptr<World> wrld, int width, int height,
                              const char *title)
-    : window(width, height, title), scene_(wrld),
+    : window(width, height, title),
+      scene_(std::make_shared<Scene>(
+          std::make_shared<WorldComponentProvider>(wrld))),
       inputHandler(key_signal, window.getHandle(), camera) {
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -35,8 +38,8 @@ void Visualization::run()
 
     inputHandler.processInput(deltaTime);
 
-    scene_.renderAll(camera.getViewMatrix(), camera.getProjection(),
-                     camera.getPosition());
+    scene_->renderAll(camera.getViewMatrix(), camera.getProjection(),
+                      camera.getPosition());
     window.pollEvents();
 }
 

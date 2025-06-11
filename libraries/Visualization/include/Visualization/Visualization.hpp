@@ -41,7 +41,7 @@ private:
     Window window;
     Camera camera;
     InputHandler inputHandler;
-    Scene scene_;
+    std::shared_ptr<Scene> scene_;
 
     // todo: add to scene
     // std::unique_ptr<Model> model;
