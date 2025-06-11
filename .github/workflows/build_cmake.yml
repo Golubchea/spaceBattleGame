@@ -280,19 +280,19 @@ jobs:
         # endif()
 
         set(TEST_TARGETS
-        ccov-report-tests_BVH
-        ccov-report-tests_ECS
-        ccov-report-tests_GameLogic
-        ccov-report-tests_IOC
-        ccov-report-tests_Network
-        ccov-report-tests_command
-        ccov-report-tests_exceptionHandler
+          ccov-report-tests_BVH
+          ccov-report-tests_ECS
+          ccov-report-tests_GameLogic
+          ccov-report-tests_IOC
+          ccov-report-tests_Network
+          ccov-report-tests_command
+          ccov-report-tests_exceptionHandler
         )
 
         foreach(test_target IN LISTS TEST_TARGETS)
         execute_process(
-            COMMAND ninja "${test_target}"
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            COMMAND cmake --build . --parallel ${N} -t "${test_target}"
+            WORKING_DIRECTORY build
             RESULT_VARIABLE result
             OUTPUT_VARIABLE output
             ERROR_VARIABLE error_output
