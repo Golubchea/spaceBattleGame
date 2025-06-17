@@ -1,0 +1,50 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "Client" {
+  [InputHandler]
+  [Visualization]
+}
+
+package "Server" {
+  [GameLogic]
+  [NetworkServer]
+}
+
+package "Shared" {
+  [World]
+  [Entity]
+  [Component]
+  [PositionComponent]
+  [VelocityComponent]
+  [FuelComponent]
+  [ModelComponent]
+}
+
+package "Networking" {
+  [AsioNetworkClient]
+  [Signal]
+  [CommandExecutor]
+}
+
+[InputHandler] --> [CommandExecutor]
+[CommandExecutor] --> [World]
+[Visualization] --> [World]
+
+[AsioNetworkClient] --> [Signal]
+[Signal] --> [CommandExecutor]
+[NetworkServer] --> [World]
+[World] --> [Component]
+[Component] <|-- [PositionComponent]
+[Component] <|-- [VelocityComponent]
+[Component] <|-- [FuelComponent]
+[Component] <|-- [ModelComponent]
+
+note right of Visualization
+  Рендерит объекты с позицией и моделью
+end note
+
+note right of CommandExecutor
+  Отправляет команды на сервер
+end note
+@enduml

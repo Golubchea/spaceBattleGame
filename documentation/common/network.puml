@@ -1,0 +1,29 @@
+@startuml
+title Client-Server Communication
+
+package "Client" {
+  [InputHandler]
+  [AsioNetworkClient]
+  [Signal]
+  [CommandExecutor]
+}
+
+package "Server" {
+  [NetworkServer]
+  [World]
+}
+
+[InputHandler] --> [Signal]
+[Signal] --> [CommandExecutor]
+[CommandExecutor] --> [AsioNetworkClient]
+[AsioNetworkClient] --> [NetworkServer]
+[NetworkServer] --> [World]
+
+note right of AsioNetworkClient
+  Отправляет команды через TCP
+end note
+
+note right of NetworkServer
+  Принимает команды и обновляет мир
+end note
+@enduml

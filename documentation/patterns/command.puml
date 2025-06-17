@@ -1,0 +1,23 @@
+@startuml
+interface ICommand {
+    +execute()
+    +serialize() : vector<uint8_t>
+}
+
+class MoveCommand
+class RotateCommand
+class BurnFuelCommand
+class MacroCommand
+class RetryCommand
+
+ICommand <|-- MoveCommand
+ICommand <|-- RotateCommand
+ICommand <|-- BurnFuelCommand
+ICommand <|-- MacroCommand
+ICommand <|-- RetryCommand
+
+class CommandExecutor {
+    +enqueue(ICommand*)
+    +workerLoop()
+}
+@enduml

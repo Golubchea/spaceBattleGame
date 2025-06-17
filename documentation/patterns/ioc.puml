@@ -1,0 +1,18 @@
+@startuml
+class IoCContainer {
+    +RegisterFactory<T>()
+    +Resolve<T>()
+}
+
+class PlayerFactory
+class DefaultPlayerFactory
+class CommandExecutor
+
+IoCContainer --> PlayerFactory : registers
+IoCContainer --> CommandExecutor : registers
+PlayerFactory <|-- DefaultPlayerFactory
+
+note right of IoCContainer
+  Управление зависимостями
+end note
+@enduml

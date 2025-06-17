@@ -1,0 +1,31 @@
+@startuml
+class World {
+    +Serialize() : vector<uint8_t>
+    +Deserialize(data)
+}
+
+class PositionComponent {
+    serialize(ar, version)
+}
+
+class VelocityComponent {
+    serialize(ar, version)
+}
+
+class FuelComponent {
+    serialize(ar, version)
+}
+
+class ModelComponent {
+    serialize(ar, version)
+}
+
+World --> PositionComponent : сериализует
+World --> VelocityComponent : сериализует
+World --> FuelComponent : сериализует
+World --> ModelComponent : сериализует
+
+note right of World
+  Используется Boost.Serialization
+end note
+@enduml
